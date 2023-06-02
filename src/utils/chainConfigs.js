@@ -1,5 +1,3 @@
-import { Storage } from '../types';
-
 export const Config = {
   TESTNET_CONFIG: {
     chainId: 1337,
