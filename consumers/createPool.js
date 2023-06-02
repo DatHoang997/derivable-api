@@ -1,18 +1,16 @@
 require("dotenv").config({ path: "./.env" })
 const { ethers } = require("ethers")
 const bn = ethers.BigNumber.from
-const { ZERO_ADDRESS } = require("../src/helpers/constants").hexes
 const { accumulationConsumerFactory } = require("chain-backend")
-const { utils } = require("ethers")
 const VolumeModel = require("../src/models/VolumeModel")
-const { chainConfigs } = require("../src/helpers/util")
+const decodePool = require("../src/services/decodePools")
 
 module.exports = (config) => {
-  let chainConfig = chainConfigs()
+  const derivableTopic = '0xe17be4ebc00f711cfd440c6386f98af2b21ea80c4efc6bb5e6008fc122caa630'
   const filter = [
     {
       topics: [
-        "0xe17be4ebc00f711cfd440c6386f98af2b21ea80c4efc6bb5e6008fc122caa630",
+        derivableTopic,
       ],
     },
   ]
@@ -22,25 +20,14 @@ module.exports = (config) => {
   const consumer = accumulationConsumerFactory({
     ...config,
     filter,
-    genesis: process.env.GENESIS,
+    genesis: 0,
 
     applyLogs: async (value, logs) => {
-      for (let log of logs) {
-        console.log(log)
-        // const logParsed = iface.parseLog(log);
-        // let senderAddress = logParsed.args.dstReceiver;
-        // let tokenFrom = logParsed.args.srcToken;
-        // let tokenTo = logParsed.args.dstToken;
-        // let amount = logParsed.args.amount;
-        // let returnAmount = logParsed.args.returnAmount;
-        // await save(
-        //     senderAddress,
-        //     tokenFrom,
-        //     tokenTo,
-        //     amount,
-        //     returnAmount,
-        // );
-      }
+      const ddlLogs = logs.filter((log) => {
+        return log.address && [derivableTopic].includes(log.topics[0]);
+      });
+      const parsedLogs = await decodePool.parseDdlLogs(ddlLogs);
+      console.log(parsedLogs)
       return value // untouched
     },
   })

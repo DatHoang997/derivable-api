@@ -7,6 +7,7 @@ const { CHUNK_SIZE_HARD_CAP, TARGET_LOGS_PER_CHUNK } =
 
 const { Mongoose } = require("mongoose");
 const { startWorker, chainlogProcessorConfig } = require("chain-backend");
+const configs = require("../src/helpers/constants")
 
 async function createMongoose() {
     let mongoose = new Mongoose();
@@ -41,17 +42,15 @@ async function main() {
     const provider = new AssistedJsonRpcProvider(
         new JsonRpcProvider({
             timeout: 6000,
-            url: process.env.RPC_URL,
+            url: configs[process.env.CHAIN].rpcUrl,
         }),
         {
-            rateLimitCount: parseInt(process.env.RPC_RATE_LIMIT_COUNT),
-            rateLimitDuration: parseInt(process.env.RPC_RATE_LIMIT_DURATION),
-            rangeThreshold: parseInt(process.env.RPC_RANGETHRESHOLD),
-            maxResults: parseInt(process.env.RPC_MAX_RESULTS),
-            url: process.env.RPC_SCANURL,
-            apiKeys: [
-                process.env.RPC_APIKEYS
-            ],
+          rateLimitCount: configs[process.env.CHAIN].rpc_rate_limit_count,
+          rateLimitDuration: configs[process.env.CHAIN].rpc_rate_limit_duration,
+          rangeThreshold: configs[process.env.CHAIN].rpc_range_threshold,
+          maxResults: configs[process.env.CHAIN].rpc_maxResults,
+          url: configs[process.env.CHAIN].scanApi,
+          apiKeys: configs[process.env.CHAIN].apiKey,
         },
     );
 

@@ -1,85 +1,47 @@
-exports.constants = {
-    admin: {
-        name: "admin",
-        email: "admin@admin.com",
-    },
-    confirmEmails: {
-        from: "no-reply@test-app.com",
-    },
-};
-
 exports.hexes = {
-    ZERO_HASH:
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
-    ZERO_ADDRESS: "0x0000000000000000000000000000000000000000",
-    LARGE_VALUE:
-        "0x8000000000000000000000000000000000000000000000000000000000000000",
-};
+  ZERO_HASH:
+    "0x0000000000000000000000000000000000000000000000000000000000000000",
+  ZERO_ADDRESS: "0x0000000000000000000000000000000000000000",
+  LARGE_VALUE:
+    "0x8000000000000000000000000000000000000000000000000000000000000000",
+}
 
 exports.getlogs = {
-    CHUNK_SIZE_HARD_CAP: 4000,
-    TARGET_LOGS_PER_CHUNK: 500,
-};
+  CHUNK_SIZE_HARD_CAP: 4000,
+  TARGET_LOGS_PER_CHUNK: 500,
+}
 
-exports.config56 = {
-    TOKENS: {
-        LZ: "0x3B78458981eB7260d1f781cb8be2CaAC7027DbE2",
-    },
-    dppAddress: "0xd9CAc3D964327e47399aebd8e1e6dCC4c251DaAE",
-    dspAddress: "0x0fb9815938Ad069Bf90E14FE6C596c514BEDe767",
-    dvmAddress: "0x790B4A80Fb1094589A3c0eFC8740aA9b0C1733fB",
-    factories: [
-        "0x9a7b42f2cC543ab1bcFEB2b9F8b9cB8CC0F38E5F",
-        "0x45F19b5aBA58D83CF09923b7C861Be19bDe752A1",
-    ],
-};
-
-exports.config42161 = {
-    TOKENS: {
-        LZ: "0x3B78458981eB7260d1f781cb8be2CaAC7027DbE2",
-    },
-    dppAddress: "0xa6Cf3d163358aF376ec5e8B7Cc5e102a05FdE63D",
-    dspAddress: "0xC8fE2440744dcd733246a4dB14093664DEFD5A53",
-    dvmAddress: "0xDa4c4411c55B0785e501332354A036c04833B72b",
-    factories: [
-        "0xb929e83EDFC042D7c0BBEfBe99adBb7FDaBe27D5",
-        "0xd553810a1AF6E27043c19cF5d67f3Cf4178D83fB",
-    ],
-};
-
-exports.config10 = {
-    TOKENS: {
-        LZ: "0x3B78458981eB7260d1f781cb8be2CaAC7027DbE2",
-    },
-    dppAddress: "0xDb9C53F2cED34875685B607c97A61a65DA2F30a8",
-    dspAddress: "0x1f83858cD6d0ae7a08aB1FD977C06DABEcE6d711",
-    dvmAddress: "0x2B800DC6270726F7E2266cE8cD5A3F8436fe0B40",
-    factories: [
-        "0xe5Da6e7762de4fA52816B22F57077e2D440eC262",
-        '0x91d983791EAa1C6d9cDdBa155ccf0c7daAe62b8f',
-    ],
-};
-
-exports.getDodo = {
-    dppIface: [
-        "event NewDPP(address baseToken,address quoteToken,address creator,address dpp)",
-    ],
-
-    dspIface: [
-        "event NewDSP(address baseToken,address quoteToken,address creator,address dsp)",
-    ],
-
-    dvmIface: [
-        "event NewDVM(address baseToken,address quoteToken,address creator,address dvm)",
-    ],
-    swappedIface: [
-        "event Swapped(address indexed sender,address indexed srcToken,address indexed dstToken,address dstReceiver,uint256 amount,uint256 spentAmount,uint256 returnAmount,uint256 minReturnAmount,address referral)",
-    ],
-    dppTopic:
-        "0x8494fe594cd5087021d4b11758a2bbc7be28a430e94f2b268d668e5991ed3b8a",
-    dspTopic:
-        "0xbc1083a2c1c5ef31e13fb436953d22b47880cf7db279c2c5666b16083afd6b9d",
-    dvmTopic:
-        "0xaf5c5f12a80fc937520df6fcaed66262a4cc775e0f3fceaf7a7cfe476d9a751d",
+exports.arbitrum = {
+  chainId: 42161,
+  rpcUrl: "https://arb1.arbitrum.io/rpc",
+  rpcToGetLogs: "https://arb1.arbitrum.io/rpc",
+  scanApi: "https://api.arbiscan.io/api",
+  timePerBlock: 1000,
+  nativeToken: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+  addresses: {
+    reserveTokenPrice: "0xBf4CC059DfF52AeFe7f12516e4CA4Bc691D97474",
+    uniswapFactory: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+    token: "0x2c57087D69f1Bf5974CA21ADb50b9dBEF8CF51CC",
+    stateCalHelper: "0x185808A2e2819840d2A0BcF8c90D815Fb9da2054",
+    multiCall: "0xcA11bde05977b3631167028862bE2a173976CA11",
+    pairsInfo: "0x81C8f6bC2a602B9Ad403116ab4c0EC1a0e5B49B1",
+    pairsV3Info: "0x81C8f6bC2a602B9Ad403116ab4c0EC1a0e5B49B1",
+    bnA: "0x357FF35761979254F93a21995b20d9071904603d",
+    tokensInfo: "0x696630d3aE600147902c71bF967ec3eb7a2C8b44",
+    router: "0xbc9a257e43f7b3b1a03aEBE909f15e95A4928834",
+    wrapToken: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+    wrapUsdPair: "0xCB0E5bFa72bBb4d16AB5aA0c60601c438F04b4ad",
+  },
+  stableCoins: [
+    "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+    "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+    "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+  ],
+  apiKey: ["G4UZWDHIR33H59QNXBQF8IR6XQSD521BGV"],
+  genesis: 0,
+  rpc_rate_limit_count: 5,
+  rpc_rate_limit_duration: 1000,
+  rpc_range_threshold: 4000,
+  rpc_maxResults: 100
 }
 
