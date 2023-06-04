@@ -1,28 +1,28 @@
-export const LARGE_VALUE =
+exports.LARGE_VALUE =
   '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
-export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
-export const NATIVE_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
-export const fee10000 = 30;
-export const MINI_SECOND_PER_DAY = 86400000;
-export const LP_PRICE_UNIT = 10000;
-export const TIME_TO_REFRESH_STATE = 30000;
-export const CHART_API_ENDPOINT =
+exports.ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+exports.NATIVE_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+exports.fee10000 = 30;
+exports.MINI_SECOND_PER_DAY = 86400000;
+exports.LP_PRICE_UNIT = 10000;
+exports.TIME_TO_REFRESH_STATE = 30000;
+exports.CHART_API_ENDPOINT =
   'https://api-chart-{chainId}.derivable.finance/';
 
-export const LOCALSTORAGE_KEY = {
+exports.LOCALSTORAGE_KEY = {
   DDL_LOGS: 'ddl-log-v1.0',
   LAST_BLOCK_DDL_LOGS: 'last-block-ddl-log-v1.0',
   SWAP_LOGS: 'swap-log-v1.0',
   SWAP_BLOCK_LOGS: 'last-block-swap-log-v1.0',
 };
 
-export const ddlGenesisBlock = {
+exports.ddlGenesisBlock = {
   56: 23917200,
   31337: 0,
   42161: 84499330,
 };
 
-export const POOL_IDS = {
+exports.POOL_IDS = {
   cToken: 0x20000,
   cp: 0x10000,
   cw: 0x10001,
@@ -37,7 +37,7 @@ export const POOL_IDS = {
   C: 0x30,
 };
 
-export const EventDataAbis = {
+exports.EventDataAbis = {
   PoolCreated: [
     'address UTR',
     'address TOKEN',

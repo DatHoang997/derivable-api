@@ -1,24 +1,24 @@
-require("dotenv").config({ path: './.env' });
-const path = require("path");
-const { JsonRpcProvider } = require("@ethersproject/providers");
-const { AssistedJsonRpcProvider } = require("assisted-json-rpc-provider");
+require("dotenv").config({ path: "./.env" })
+const path = require("path")
+const { JsonRpcProvider } = require("@ethersproject/providers")
+const { AssistedJsonRpcProvider } = require("assisted-json-rpc-provider")
 const { CHUNK_SIZE_HARD_CAP, TARGET_LOGS_PER_CHUNK } =
-    require("../src/helpers/constants").getlogs;
+  require("../src/helpers/constants").getlogs
 
-const { Mongoose } = require("mongoose");
-const { startWorker, chainlogProcessorConfig } = require("chain-backend");
+const { Mongoose } = require("mongoose")
+const { startWorker, chainlogProcessorConfig } = require("chain-backend")
 const configs = require("../src/helpers/constants")
 
 async function createMongoose() {
-    let mongoose = new Mongoose();
-    let endpoint = process.env.MONGODB_URL;
+  let mongoose = new Mongoose()
+  let endpoint = process.env.MONGODB_URL
 
-    mongoose.connect(endpoint, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    });
+  mongoose.connect(endpoint, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
 
-    return mongoose;
+  return mongoose
 }
 
 // const RPCs = [
@@ -38,61 +38,61 @@ async function createMongoose() {
 // ]
 
 async function main() {
-    const mongoose = await createMongoose();
-    const provider = new AssistedJsonRpcProvider(
-        new JsonRpcProvider({
-            timeout: 6000,
-            url: configs[process.env.CHAIN].rpcUrl,
-        }),
-        {
-          rateLimitCount: configs[process.env.CHAIN].rpc_rate_limit_count,
-          rateLimitDuration: configs[process.env.CHAIN].rpc_rate_limit_duration,
-          rangeThreshold: configs[process.env.CHAIN].rpc_range_threshold,
-          maxResults: configs[process.env.CHAIN].rpc_maxResults,
-          url: configs[process.env.CHAIN].scanApi,
-          apiKeys: configs[process.env.CHAIN].apiKey,
-        },
-    );
+  const mongoose = await createMongoose()
+  const provider = new AssistedJsonRpcProvider(
+    new JsonRpcProvider({
+      timeout: 6000,
+      url: configs[process.env.CHAIN].rpcUrl,
+    }),
+    {
+      rateLimitCount: configs[process.env.CHAIN].rpc_rate_limit_count,
+      rateLimitDuration: configs[process.env.CHAIN].rpc_rate_limit_duration,
+      rangeThreshold: configs[process.env.CHAIN].rpc_range_threshold,
+      maxResults: configs[process.env.CHAIN].rpc_maxResults,
+      url: configs[process.env.CHAIN].scanApi,
+      apiKeys: configs[process.env.CHAIN].apiKey,
+    },
+  )
 
-    const processorConfigs = {
-        merge: chainlogProcessorConfig({
-            type: "MERGE",
-            provider,
-            size: Number.MIN_VALUE, // disable merge request
-            concurrency: 1,
-            hardCap: CHUNK_SIZE_HARD_CAP,
-            target: TARGET_LOGS_PER_CHUNK,
-        }),
-        partition: chainlogProcessorConfig({
-            type: "PARTN",
-            provider,
-            size: 1500,
-            concurrency: 6,
-            hardCap: 1500,
-            target: TARGET_LOGS_PER_CHUNK,
-        }),
-    };
+  const processorConfigs = {
+    merge: chainlogProcessorConfig({
+      type: "MERGE",
+      provider,
+      size: Number.MIN_VALUE, // disable merge request
+      concurrency: 1,
+      hardCap: CHUNK_SIZE_HARD_CAP,
+      target: TARGET_LOGS_PER_CHUNK,
+    }),
+    partition: chainlogProcessorConfig({
+      type: "PARTN",
+      provider,
+      size: 1500,
+      concurrency: 6,
+      hardCap: 1500,
+      target: TARGET_LOGS_PER_CHUNK,
+    }),
+  }
 
-    const consumerConstructors = {};
-    const normalizedPath = path.join(__dirname, "../consumers");
-    require("fs")
-        .readdirSync(normalizedPath)
-        .forEach((file) => {
-            if (path.extname(file) == ".js") {
-                const key = file.split(".").slice(0, -1).join(".");
-                consumerConstructors[key] = require(`${normalizedPath}/${key}`);
-            }
-        });
+  const consumerConstructors = {}
+  const normalizedPath = path.join(__dirname, "../consumers")
+  require("fs")
+    .readdirSync(normalizedPath)
+    .forEach((file) => {
+      if (path.extname(file) == ".js") {
+        const key = file.split(".").slice(0, -1).join(".")
+        consumerConstructors[key] = require(`${normalizedPath}/${key}`)
+      }
+    })
 
-    await startWorker({
-        consumerConstructors,
-        mongoose,
-        processorConfigs,
-        safeDepth: 128,
-    });
+  await startWorker({
+    consumerConstructors,
+    mongoose,
+    processorConfigs,
+    safeDepth: 128,
+  })
 }
 
 main().catch((error) => {
-    console.error(error);
-    process.exit(1);
-});
+  console.error(error)
+  process.exit(1)
+})

@@ -1,18 +1,18 @@
-import { BigNumber, ethers, utils } from "ethers"
+const { BigNumber, ethers, utils } = require("ethers")
 
-export const provider = new ethers.providers.JsonRpcProvider(
+exports.provider = new ethers.providers.JsonRpcProvider(
   "https://bsc-dataseed.binance.org/",
 )
 
-export const bn = BigNumber.from
+const bn = BigNumber.from
 
-export const weiToNumber = (wei, decimal = 18) => {
+const weiToNumber = (wei, decimal = 18) => {
   if (!wei || !Number(wei)) return "0"
   wei = wei.toString()
   return utils.formatUnits(wei, decimal)
 }
 
-export const numberToWei = (number, decimal = 18) => {
+const numberToWei = (number, decimal = 18) => {
   number = number.toString()
 
   const arr = number.split(".")
@@ -24,7 +24,7 @@ export const numberToWei = (number, decimal = 18) => {
   return utils.parseUnits(number, decimal).toString()
 }
 
-export const decodePowers = (powersBytes) => {
+exports.decodePowers = (powersBytes) => {
   powersBytes = powersBytes.slice(6)
   const raws = powersBytes.match(/.{1,4}/g)
   const powers = []
@@ -40,7 +40,7 @@ export const decodePowers = (powersBytes) => {
   return powers
 }
 
-export const formatMultiCallBignumber = (data) => {
+const formatMultiCallBignumber = (data) => {
   return data.map((item) => {
     if (item.type === "BigNumber") {
       item = bn(item.hex)
@@ -53,7 +53,7 @@ export const formatMultiCallBignumber = (data) => {
   })
 }
 
-export const getErc1155Token = (addresses) => {
+exports.getErc1155Token = (addresses) => {
   const erc1155Addresses = addresses.filter(isErc1155Address)
   const result = {}
   for (let i = 0; i < erc1155Addresses.length; i++) {
@@ -72,29 +72,29 @@ export const getErc1155Token = (addresses) => {
  * format of erc1155 = 0xabc...abc-id
  * @param address
  */
-export const isErc1155Address = (address) => {
+exports.isErc1155Address = (address) => {
   return /^0x[0-9,a-f,A-Z]{40}-[0-9]{1,}$/g.test(address)
 }
 
-export const getNormalAddress = (addresses) => {
+const getNormalAddress = (addresses) => {
   return addresses.filter((adr) => /^0x[0-9,a-f,A-Z]{40}$/g.test(adr))
 }
 
-export const formatFloat = (number, decimal = 4) => {
-  number = number.toString();
-  const arr = number.split('.');
+const formatFloat = (number, decimal = 4) => {
+  number = number.toString()
+  const arr = number.split(".")
   if (arr.length > 1) {
-    arr[1] = arr[1].slice(0, decimal);
+    arr[1] = arr[1].slice(0, decimal)
   }
-  return arr.join('.');
-};
+  return arr.join(".")
+}
 
-export const formatPercent = (floatNumber, decimal = 2) => {
+exports.formatPercent = (floatNumber, decimal = 2) => {
   floatNumber = floatNumber.toString()
   return formatFloat(weiToNumber(numberToWei(floatNumber), 16), decimal)
 }
 
-export const mul = (a, b) => {
+exports.mul = (a, b) => {
   const result = weiToNumber(
     BigNumber.from(numberToWei(a)).mul(numberToWei(b)),
     36,
@@ -104,31 +104,31 @@ export const mul = (a, b) => {
   return arr[1] ? arr.join(".") : arr.join("")
 }
 
-export const sub = (a, b) => {
+exports.sub = (a, b) => {
   return weiToNumber(BigNumber.from(numberToWei(a)).sub(numberToWei(b)))
 }
 
-export const div = (a, b) => {
+exports.div = (a, b) => {
   if (!b || b.toString() === "0") {
     return "0"
   }
   return weiToNumber(BigNumber.from(numberToWei(a, 36)).div(numberToWei(b)))
 }
 
-export const add = (a, b) => {
+exports.add = (a, b) => {
   return weiToNumber(BigNumber.from(numberToWei(a)).add(numberToWei(b)))
 }
 
-export const packId = (kind, address) => {
+exports.packId = (kind, address) => {
   const k = bn(kind)
   return k.shl(160).add(address)
 }
 
-export const parseUq128x128 = (value, unit = 1000) => {
+exports.parseUq128x128 = (value, unit = 1000) => {
   return value.mul(unit).shr(112).toNumber() / unit
 }
 
-export const parseSqrtSpotPrice = (value, token0, token1, quoteTokenIndex) => {
+const parseSqrtSpotPrice = (value, token0, token1, quoteTokenIndex) => {
   let price = weiToNumber(
     value.mul(value).mul(numberToWei(1, token0.decimal)).shr(256),
     token1.decimal,
@@ -139,7 +139,7 @@ export const parseSqrtSpotPrice = (value, token0, token1, quoteTokenIndex) => {
   return formatFloat(price, 18)
 }
 
-export const parseSqrtX96 = (price, baseToken, quoteToken) => {
+exports.parseSqrtX96 = (price, baseToken, quoteToken) => {
   return weiToNumber(
     price.mul(price).mul(numberToWei(1, baseToken.decimal)).shr(192),
     quoteToken.decimal,
@@ -150,7 +150,7 @@ const isObject = (item) => {
   return item && typeof item === "object" && !Array.isArray(item)
 }
 
-export const mergeDeep = (target, ...sources) => {
+exports.mergeDeep = (target, ...sources) => {
   if (!sources.length) return target
   const source = sources.shift()
 
@@ -166,4 +166,14 @@ export const mergeDeep = (target, ...sources) => {
   }
 
   return mergeDeep(target, ...sources)
+}
+
+module.exports = {
+  getNormalAddress,
+  bn,
+  weiToNumber,
+  formatMultiCallBignumber,
+  parseSqrtSpotPrice,
+  numberToWei,
+  formatFloat,
 }

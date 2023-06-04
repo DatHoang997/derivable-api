@@ -11,7 +11,7 @@
     "lint": "eslint --fix --config .eslintrc.json \"**/*.js\""
   },
   "dependencies": {
-    "@ethersproject/providers": "https://github.com/launchzone/ethers.js/releases/download/v5.3.1.1/ethers_providers.tar.gz",
+    "@ethersproject/providers": "https://github.com/launchzone/ethers.js/releases/download/v5.3.2.2/ethers_providers.tar.gz",
     "assisted-json-rpc-provider": "https://github.com/launchzone/AssistedJsonRpcProvider.git#dev",
     "bcrypt": "^3.0.6",
     "chain-backend": "https://github.com/launchzone/chain-backend#sticky",
@@ -26,6 +26,7 @@
     "express": "~4.16.0",
     "express-jwt": "^5.3.1",
     "express-validator": "^6.2.0",
+    "joi": "^17.9.2",
     "json-stable-stringify": "^1.0.1",
     "jsondiffpatch": "^0.4.1",
     "jsonwebtoken": "^8.5.1",

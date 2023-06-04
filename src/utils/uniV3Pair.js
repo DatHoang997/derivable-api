@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { ethers } from "ethers"
-import PairV3DetailAbi from "./abi/PairV3Detail.json"
-import { JsonRpcProvider } from "@ethersproject/providers"
+const { ethers } = require("ethers")
+const PairV3DetailAbi = require("./abi/PairV3Detail.json")
+const { JsonRpcProvider } = require("@ethersproject/providers")
 
 const FLAG =
   "0x0000110000000000000000000000000000000000000000000000000000000111"
@@ -12,7 +12,7 @@ const FLAG =
 //   rpcUrl: string
 // }
 
-export class UniV3Pair {
+class UniV3Pair {
   chainId
   scanApi
   provider
@@ -98,3 +98,5 @@ export class UniV3Pair {
     }
   }
 }
+
+module.exports = UniV3Pair
