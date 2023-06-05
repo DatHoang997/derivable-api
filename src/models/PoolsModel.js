@@ -7,7 +7,7 @@ var PoolsSchema = new Schema(
     pool_address: {
       type: String,
       required: true,
-      unix: true
+      unix: true,
     },
     tiket_id: {
       type: String,
@@ -68,6 +68,22 @@ var PoolsSchema = new Schema(
     constract_price: {
       type: String,
       required: false,
+    },
+    mark: {
+      type: String,
+      required: true,
+    },
+    oracle: {
+      type: String,
+      required: true,
+    },
+    k: {
+      type: String,
+      required: false,
+    },
+    token: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: false },

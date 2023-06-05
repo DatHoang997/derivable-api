@@ -41,45 +41,40 @@ class DecodePools {
       pool.quoteToken,
       pool.TOKEN_R,
     )
-    const pool_address = pool.poolAddress
-    const base_address = pool.baseToken
-    const quote_address = pool.quoteToken
-    const r_address =  pool.TOKEN_R
-    const tiket_id = `${baseToken}-${quoteToken}^${pool.k}.${token_r}`
-    const base_currency = baseToken
-    const quote_currency = quoteToken
+
     const last_price = parseSqrtSpotPrice(
       bn(pool.states.twap.toString()),
       this.pairsInfo[this.pair].token0,
       this.pairsInfo[this.pair].token1,
       1,
     )
-    const product_type = "PERP"
+
     const index_price = parseSqrtSpotPrice(
       bn(pool.states.twap.toString()),
       this.pairsInfo[this.pair].token0,
       this.pairsInfo[this.pair].token1,
       1,
     )
-    const index_name = baseToken
-    const index_currency = token_r
-    const start_timestamp = pool.timestamp.toString()
-    const end_timestamp = Math.floor(Number.MAX_SAFE_INTEGER).toString()
+
     return {
-      pool_address,
-      tiket_id,
-      base_currency,
-      quote_currency,
+      pool_address: pool.poolAddress,
+      tiket_id: `${baseToken}-${quoteToken}^${pool.k}.${token_r}`,
+      base_currency: baseToken,
+      quote_currency: quoteToken,
       last_price,
-      product_type,
+      product_type: "PERP",
       index_price,
-      index_name,
-      index_currency,
-      start_timestamp,
-      end_timestamp,
-      base_address,
-      quote_address,
-      r_address,
+      index_name: baseToken,
+      index_currency: token_r,
+      start_timestamp: pool.timestamp.toString(),
+      end_timestamp: Math.floor(Number.MAX_SAFE_INTEGER).toString(),
+      base_address: pool.baseToken,
+      quote_address: pool.quoteToken,
+      r_address: pool.TOKEN_R,
+      oracle: pool.ORACLE,
+      mark: pool.MARK.toString(),
+      k: pool.k.toString(),
+      token: pool.TOKEN,
     }
   }
 
@@ -191,8 +186,8 @@ class DecodePools {
     })
     const normalTokens = _.uniq(getNormalAddress(listTokens))
 
-    // @ts-ignore
     const context = this.getMultiCallRequest(normalTokens, listPools)
+    console.log(context)
 
     const { results } = await multicall.call(context)
 
