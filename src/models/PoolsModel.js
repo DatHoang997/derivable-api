@@ -85,6 +85,14 @@ var PoolsSchema = new Schema(
       type: String,
       required: true,
     },
+    powers: {
+      type: Array,
+      required: true,
+    },
+    half_life: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: false },
 )

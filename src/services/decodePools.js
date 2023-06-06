@@ -2,6 +2,7 @@ const {
   getNormalAddress,
   formatMultiCallBignumber,
   bn,
+  div,
   parseSqrtSpotPrice,
   weiToNumber,
   numberToWei,
@@ -75,6 +76,8 @@ class DecodePools {
       mark: pool.MARK.toString(),
       k: pool.k.toString(),
       token: pool.TOKEN,
+      powers: pool.powers,
+      half_life: pool.HALF_LIFE.toString()
     }
   }
 
@@ -187,7 +190,6 @@ class DecodePools {
     const normalTokens = _.uniq(getNormalAddress(listTokens))
 
     const context = this.getMultiCallRequest(normalTokens, listPools)
-    console.log(context)
 
     const { results } = await multicall.call(context)
 
@@ -199,6 +201,7 @@ class DecodePools {
       results,
       Object.keys(listPools),
     )
+
     const tokens = []
     for (let i = 0; i < tokensArr.length; i++) {
       tokens.push({
@@ -215,40 +218,32 @@ class DecodePools {
 
     for (const i in pools) {
       pools[i].states = poolsState[i]
-      const {
-        UTR,
-        TOKEN,
-        MARK: _MARK,
-        ORACLE,
-        TOKEN_R,
-        powers,
-        k: _k,
-      } = pools[i]
+      pools[i] = {
+        ...pools[i],
+        ...this.calcPoolInfo(pools[i]),
+      }
+
+      const {MARK: _MARK, ORACLE, k: _k} = pools[i]
 
       const quoteTokenIndex = bn(ORACLE.slice(0, 3)).gt(0) ? 1 : 0
-      this.pair = ethers.utils.getAddress("0x" + ORACLE.slice(-40))
+      const pair = ethers.utils.getAddress('0x' + ORACLE.slice(-40))
 
       const baseToken =
-        quoteTokenIndex === 0
-          ? this.pairsInfo[this.pair].token1
-          : this.pairsInfo[this.pair].token0
+        quoteTokenIndex === 0 ? pairsInfo[pair].token1 : this.pairsInfo[pair].token0
       const quoteToken =
-        quoteTokenIndex === 0
-          ? this.pairsInfo[this.pair].token0
-          : this.pairsInfo[this.pair].token1
+        quoteTokenIndex === 0 ? pairsInfo[pair].token0 : this.pairsInfo[pair].token1
 
       pools[i].baseToken = baseToken.address
       pools[i].quoteToken = quoteToken.address
 
-      const MARK = _MARK.toString()
       const k = _k.toNumber()
-      const id = [UTR, TOKEN, MARK, ORACLE, TOKEN_R].join("-")
+      const id = [pair].join('-')
       if (poolGroups[id]) {
         poolGroups[id].pools[i] = pools[i]
       } else {
-        poolGroups[id] = { pools: { [i]: pools[i] } }
+        poolGroups[id] = {pools: {[i]: pools[i]}}
         poolGroups[id].UTR = pools[i].UTR
-        poolGroups[id].pair = this.pairsInfo[this.pair]
+        poolGroups[id].pair = this.pairsInfo[pair]
         poolGroups[id].baseToken = pools[i].baseToken
         poolGroups[id].quoteToken = pools[i].quoteToken
         poolGroups[id].TOKEN = pools[i].TOKEN
@@ -264,8 +259,8 @@ class DecodePools {
         }
         poolGroups[id].basePrice = parseSqrtSpotPrice(
           poolsState[i].spot,
-          this.pairsInfo[this.pair].token0,
-          this.pairsInfo[this.pair].token1,
+          this.pairsInfo[pair].token0,
+          this.pairsInfo[pair].token1,
           quoteTokenIndex,
         )
       }
@@ -285,50 +280,50 @@ class DecodePools {
       }
       if (poolGroups[id].dTokens) {
         poolGroups[id].dTokens.push(
-          pools[i].poolAddress + "-" + POOL_IDS.A,
-          pools[i].poolAddress + "-" + POOL_IDS.B,
+          pools[i].poolAddress + '-' + POOL_IDS.A,
+          pools[i].poolAddress + '-' + POOL_IDS.B,
         )
       } else {
         poolGroups[id].dTokens = [
-          pools[i].poolAddress + "-" + POOL_IDS.A,
-          pools[i].poolAddress + "-" + POOL_IDS.B,
+          pools[i].poolAddress + '-' + POOL_IDS.A,
+          pools[i].poolAddress + '-' + POOL_IDS.B,
         ]
       }
       if (poolGroups[id].allTokens) {
         poolGroups[id].allTokens.push(
-          pools[i].poolAddress + "-" + POOL_IDS.A,
-          pools[i].poolAddress + "-" + POOL_IDS.B,
-          pools[i].poolAddress + "-" + POOL_IDS.C,
+          pools[i].poolAddress + '-' + POOL_IDS.A,
+          pools[i].poolAddress + '-' + POOL_IDS.B,
+          pools[i].poolAddress + '-' + POOL_IDS.C,
         )
       } else {
         poolGroups[id].allTokens = [
-          pools[i].poolAddress + "-" + POOL_IDS.A,
-          pools[i].poolAddress + "-" + POOL_IDS.B,
-          pools[i].poolAddress + "-" + POOL_IDS.C,
+          pools[i].poolAddress + '-' + POOL_IDS.A,
+          pools[i].poolAddress + '-' + POOL_IDS.B,
+          pools[i].poolAddress + '-' + POOL_IDS.C,
         ]
       }
 
       tokens.push(
         {
-          symbol: baseToken.symbol + "^" + (1 + k / 2),
-          name: baseToken.symbol + "^" + (1 + k / 2),
-          decimal: 18,
+          symbol: baseToken.symbol + '^' + (1 + k / 2),
+          name: baseToken.symbol + '^' + (1 + k / 2),
+          decimal: this.getDecimals(baseToken, quoteToken, POOL_IDS.A),
           totalSupply: 0,
-          address: pools[i].poolAddress + "-" + POOL_IDS.A,
+          address: pools[i].poolAddress + '-' + POOL_IDS.A,
         },
         {
-          symbol: baseToken.symbol + "^" + (1 - k / 2),
-          name: baseToken.symbol + "^" + (1 - k / 2),
-          decimal: 18,
+          symbol: baseToken.symbol + '^' + (1 - k / 2),
+          name: baseToken.symbol + '^' + (1 - k / 2),
+          decimal: this.getDecimals(baseToken, quoteToken, POOL_IDS.B),
           totalSupply: 0,
-          address: pools[i].poolAddress + "-" + POOL_IDS.B,
+          address: pools[i].poolAddress + '-' + POOL_IDS.B,
         },
         {
           symbol: `DLP-${baseToken.symbol}-${k / 2}`,
           name: `DLP-${baseToken.symbol}-${k / 2}`,
-          decimal: 18,
+          decimal: this.getDecimals(baseToken, quoteToken, POOL_IDS.C),
           totalSupply: 0,
-          address: pools[i].poolAddress + "-" + POOL_IDS.C,
+          address: pools[i].poolAddress + '-' + POOL_IDS.C,
         },
         baseToken,
         quoteToken,
@@ -337,7 +332,7 @@ class DecodePools {
 
     return {
       // @ts-ignore
-      tokens: _.uniqBy(tokens, "address"),
+      tokens: _.uniqBy(tokens, 'address'),
       pools,
       poolGroups,
     }
@@ -456,8 +451,7 @@ class DecodePools {
     const supplyDetails = {}
     const rDetails = {}
     for (const pool of pools) {
-      rC = pool.states.rC
-      rDcLong = pool.states.rA
+      rC = pool.states.rDcLong = pool.states.rA
       rDcShort = pool.states.rB
       rDetails[pool.k.toNumber()] = pool.states.rA
       rDetails[-pool.k.toNumber()] = pool.states.rB
@@ -472,6 +466,28 @@ class DecodePools {
       rC,
       rDcLong,
       rDcShort,
+    }
+  }
+
+  calcPoolInfo(pool) {
+    const { R, rA, rB } = pool.states
+    const rC = R.sub(rA).sub(rB)
+    const SECONDS_PER_DAY = 86400
+    const riskFactor = rC.gt(0) ? div(rA.sub(rB), rC) : "0"
+    const dailyInterestRate =
+      1 - Math.pow(2, -SECONDS_PER_DAY / pool.HALF_LIFE.toNumber())
+    this.pair = ethers.utils.getAddress("0x" + pool.ORACLE.slice(-40))
+    const price = parseSqrtSpotPrice(
+      bn(pool.states.twap.toString()),
+      this.pairsInfo[this.pair].token0,
+      this.pairsInfo[this.pair].token1,
+      1,
+    )
+    return {
+      riskFactor,
+      dailyInterestRate,
+      rC,
+      price,
     }
   }
 
@@ -519,6 +535,13 @@ class DecodePools {
   getLastBlock = async () => {
     const lastBlock = await this.provider.getBlockNumber()
     return this.provider.getBlock(lastBlock)
+  }
+
+  getDecimals(baseToken, quoteToken, side) {
+    if (side == POOL_IDS.C) {
+      return (baseToken.decimal + quoteToken.decimal) / 2
+    }
+    return 18 - baseToken.decimal + quoteToken.decimal;
   }
 }
 

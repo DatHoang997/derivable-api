@@ -107,8 +107,7 @@ exports.mul = (a, b) => {
 exports.sub = (a, b) => {
   return weiToNumber(BigNumber.from(numberToWei(a)).sub(numberToWei(b)))
 }
-
-exports.div = (a, b) => {
+const div = (a, b) => {
   if (!b || b.toString() === "0") {
     return "0"
   }
@@ -176,4 +175,5 @@ module.exports = {
   parseSqrtSpotPrice,
   numberToWei,
   formatFloat,
+  div,
 }
