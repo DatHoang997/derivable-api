@@ -1,11 +1,9 @@
 var express = require("express");
-const topVolumeController = require("../controllers/topVolumeController");
+const contractsController = require("../controllers/contractsController");
 
 var router = express.Router();
 
-router.get("/top-volume/:address?", topVolumeController.getVolume);
-router.get("/health", (req, res) => {
-	return res.status(200).json({ status: "ok" });
-});
+router.get("/contracts", contractsController.getContracts);
+router.get("/orderbooks", contractsController.getOrderbooks)
 
 module.exports = router;

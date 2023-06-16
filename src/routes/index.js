@@ -1,9 +1,9 @@
 let express = require("express")
 
-const topVolumeRouter = require("./trade")
+const contractsRouter = require("./trade")
 
 let app = express()
 
-app.use("/", topVolumeRouter)
+app.use("/", contractsRouter)
 
 module.exports = app
