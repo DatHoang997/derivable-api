@@ -8,14 +8,12 @@ mongoose.set("useFindAndModify", false)
 async function getPrice() {
   let tokens = await getTokens()
   query = []
-  console.log(tokens)
   for (let token of tokens) {
     query.push({
       token_address: token,
     })
   }
 
-  console.log(query)
   const options = {
     method: "POST",
     headers: {
@@ -32,7 +30,6 @@ async function getPrice() {
 
   const response = await fetch(url, options)
   const body = JSON.parse(await response.text())
-  console.log(body)
   for (let data of body) {
     savePrice({
       address: ethers.utils.getAddress(data.tokenAddress),
@@ -44,12 +41,10 @@ async function getPrice() {
   //   getAPIs(wallet_address, body.cursor);
   //   return;
   // }
-  // console.log("END", userSwapData.length);
   // pairSwap(contract_address);
   // return;
 }
 const savePrice = async (token) => {
-  console.log(token)
   await PoolsModel.findOneAndUpdate(
     { quote_address: token.address },
     { constract_price: token.price },

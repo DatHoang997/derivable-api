@@ -59,7 +59,7 @@ class DecodePools {
 
     return {
       pool_address: pool.poolAddress,
-      tiket_id: `${baseToken}-${quoteToken}^${pool.k}.${token_r}`,
+      ticker_id: `${baseToken}-${quoteToken}^${pool.k}.${token_r}`,
       base_currency: baseToken,
       quote_currency: quoteToken,
       last_price,

@@ -5,16 +5,9 @@ const logger = require("morgan");
 const indexRouter = require("./src/routes/index");
 const apiResponse = require("./src/helpers/apiResponse");
 const cors = require("cors");
-const cron = require('node-cron');
-const getPrice = require("./src/services/getPrice")
-const getState = require("./src/services/getState")
 
 require('./workers/chainlog-worker')
 require("dotenv").config();
-getState.getPools()
-cron.schedule('*/10 * * * *', () => {
-  getPrice.getPrice()
-});
 
 // DB connection
 const MONGODB_URL = process.env.MONGODB_URL;

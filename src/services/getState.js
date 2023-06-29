@@ -4,7 +4,6 @@ const { ethers } = require("ethers")
 const decodePools = require("./decodePools")
 
 const getPools = async () => {
-  console.log("getPools")
   const listPools = await PoolsModel.find()
   if (listPools.length == 0) return
 
@@ -32,11 +31,16 @@ const getPools = async () => {
     poolData,
     uniPools,
   )
-  console.log(pools)
+  savePools(pools)
+}
+
+const savePools = async (pools) => {
   const poolAddresses = Object.keys(pools)
 
   for (const poolAddress of poolAddresses ) {
     console.log(pools[poolAddress].price, pools[poolAddress].rC.toString())
+    PoolsModel
   }
 }
+
 module.exports = { getPools }

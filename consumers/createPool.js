@@ -1,5 +1,6 @@
 require("dotenv").config({ path: "./.env" })
 const { accumulationConsumerFactory } = require("chain-backend")
+const InfoModel = require("../src/models/infoModel")
 const PoolsModel = require("../src/models/PoolsModel")
 const decodePools = require("../src/services/decodePools")
 const configs = require("../src/helpers/constants")
@@ -38,13 +39,18 @@ module.exports = (config) => {
     },
   })
 
-  consumer.order = 1 // depends on `tokens` consumer
+  consumer.order = 1
 
   const save = async (pools) => {
     for (let pool of pools) {
       pool.chainId = configs[process.env.CHAIN].chainId
       let poolsModel = new PoolsModel(pool)
       await poolsModel.save()
+      await InfoModel.findOneAndUpdate(
+        {},
+        { time: Date.now(), eth_price: pool.last_price },
+        { upsert: true },
+      )
     }
   }
   return consumer

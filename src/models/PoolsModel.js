@@ -9,7 +9,7 @@ var PoolsSchema = new Schema(
       required: true,
       unix: true,
     },
-    tiket_id: {
+    ticker_id: {
       type: String,
       required: true,
     },
@@ -94,7 +94,7 @@ var PoolsSchema = new Schema(
       required: true,
     },
   },
-  { timestamps: false },
+  { timestamps: true },
 )
 
 module.exports = mongoose.model("pool", PoolsSchema)
