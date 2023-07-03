@@ -2,21 +2,22 @@ require("dotenv").config({ path: "./.env" })
 const { accumulationConsumerFactory } = require("chain-backend")
 const InfoModel = require("../src/models/infoModel")
 const PoolsModel = require("../src/models/PoolsModel")
-const decodePools = require("../src/services/decodePools")
 const configs = require("../src/helpers/constants")
+const { utils } = require("ethers")
 
 module.exports = (config) => {
-  const DecodePools = new decodePools()
-  const derivableTopic =
-    "0xe17be4ebc00f711cfd440c6386f98af2b21ea80c4efc6bb5e6008fc122caa630"
+  const topic =
+    "0x6950339c7661cca450281e53722525cc136590e622b011d5be7e4c4993685a6c"
   const filter = [
     {
-      topics: [derivableTopic],
+      address: "0x185808A2e2819840d2A0BcF8c90D815Fb9da2054",
+      topics: [topic],
     },
   ]
-  filter.forEach((f) => {
-    console.log(f)
-    delete f.address})
+
+  let iface = new utils.Interface([
+    "event Swap(address indexed payer,address indexed poolIn,address indexed poolOut,address recipient,uint sideIn,uint sideOut,uint amountIn,uint amountOut)",
+  ])
 
   const consumer = accumulationConsumerFactory({
     ...config,
@@ -24,21 +25,13 @@ module.exports = (config) => {
     genesis: 0,
 
     applyLogs: async (value, logs) => {
-      const parsedLogs = await DecodePools.parseDdlLogs(logs)
-      const poolData = await DecodePools.generatePoolData(parsedLogs)
-      const keys = Object.keys(poolData.pools)
-      const convertedData = []
-      for (let i = 0; i < keys.length; i++) {
-        convertedData.push(
-          await DecodePools.convertdata(poolData.pools[keys[i]]),
-        )
+      for (let log of logs) {
+        const logParsed = iface.parseLog(log);
+        console.log(logParsed)
       }
-      save(convertedData)
       return value // untouched
     },
   })
-
-  consumer.order = 1
 
   const save = async (pools) => {
     for (let pool of pools) {
