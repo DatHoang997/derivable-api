@@ -7,7 +7,6 @@ var InfoSchema = new Schema(
     eth_price: {
       type: String,
       required: true,
-      unix: true,
     },
     time: {
       type: Number,

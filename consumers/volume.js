@@ -1,7 +1,7 @@
 require("dotenv").config({ path: "./.env" })
 const { accumulationConsumerFactory } = require("chain-backend")
 const InfoModel = require("../src/models/infoModel")
-const PoolsModel = require("../src/models/PoolsModel")
+const PoolsModel = require("../src/models/poolsModel")
 const configs = require("../src/helpers/constants")
 const { utils } = require("ethers")
 

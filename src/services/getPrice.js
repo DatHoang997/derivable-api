@@ -1,12 +1,13 @@
 require("dotenv").config({ path: "./.env" })
 const { ethers } = require("ethers")
 const fetch = require("node-fetch")
-const PoolsModel = require("../models/PoolsModel")
+const PoolsModel = require("../models/poolsModel")
 const mongoose = require("mongoose")
 mongoose.set("useFindAndModify", false)
 
 async function getPrice() {
-  let tokens = await getTokens()
+  const tokens = await getTokens()
+  if(tokens.size == 0) return
   query = []
   for (let token of tokens) {
     query.push({
@@ -14,6 +15,18 @@ async function getPrice() {
     })
   }
 
+  const body = await getApi(query)
+
+  for (let data of body) {
+    console.log(data.usdPrice)
+    savePrice({
+      address: ethers.utils.getAddress(data.tokenAddress),
+      price: data.usdPrice.toString(),
+    })
+  }
+}
+
+const getApi = async (query) => {
   const options = {
     method: "POST",
     headers: {
@@ -29,37 +42,25 @@ async function getPrice() {
   const url = `https://deep-index.moralis.io/api/v2/erc20/prices?chain=${process.env.CHAIN}&include=percent_change`
 
   const response = await fetch(url, options)
-  const body = JSON.parse(await response.text())
-  for (let data of body) {
-    savePrice({
-      address: ethers.utils.getAddress(data.tokenAddress),
-      price: data.usdPrice,
-    })
-  }
-  // userSwapData = userSwapData.concat(body.result);
-  // if (body.cursor) {
-  //   getAPIs(wallet_address, body.cursor);
-  //   return;
-  // }
-  // pairSwap(contract_address);
-  // return;
+
+  return JSON.parse(await response.text())
 }
+
 const savePrice = async (token) => {
-  await PoolsModel.findOneAndUpdate(
-    { quote_address: token.address },
-    { constract_price: token.price },
+  await PoolsModel.updateMany(
+    { r_address: token.address },
+    { r_price: token.price },
   )
 }
 
 const getTokens = async () => {
   let pools = await PoolsModel.find()
-  console.log(pools)
   let tokens = []
   for (let pool of pools) {
-    tokens.push(pool.quote_address)
+    tokens.push(pool.r_address)
   }
   let set = new Set(tokens)
   return set
 }
 
-module.exports = { getPrice }
+module.exports = { getPrice, getApi }

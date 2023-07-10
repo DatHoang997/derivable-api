@@ -1,9 +1,10 @@
 require("dotenv").config({ path: "./.env" })
 const { accumulationConsumerFactory } = require("chain-backend")
 const InfoModel = require("../src/models/infoModel")
-const PoolsModel = require("../src/models/PoolsModel")
+const PoolsModel = require("../src/models/poolsModel")
 const decodePools = require("../src/services/decodePools")
 const configs = require("../src/helpers/constants")
+const { getApi } = require("../src/services/getPrice")
 
 module.exports = (config) => {
   const DecodePools = new decodePools()
@@ -38,10 +39,10 @@ module.exports = (config) => {
     },
   })
 
-  consumer.order = 1
-
   const save = async (pools) => {
     for (let pool of pools) {
+      const r_price = await getApi([{ token_address: pool.r_address }])
+      pool.r_price = r_price[0].usdPrice.toString()
       pool.chainId = configs[process.env.CHAIN].chainId
       let poolsModel = new PoolsModel(pool)
       await poolsModel.save()

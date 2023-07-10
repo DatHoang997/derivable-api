@@ -33,6 +33,10 @@ var PoolsSchema = new Schema(
       type: String,
       required: true,
     },
+    r_price: {
+      type: String,
+      required: false,
+    },
     last_price: {
       type: String,
       required: true,

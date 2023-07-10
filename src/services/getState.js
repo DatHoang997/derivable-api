@@ -1,5 +1,5 @@
 const { bn } = require("../utils/helper")
-const PoolsModel = require("../models/PoolsModel")
+const PoolsModel = require("../models/poolsModel")
 const { ethers } = require("ethers")
 const decodePools = require("./decodePools")
 

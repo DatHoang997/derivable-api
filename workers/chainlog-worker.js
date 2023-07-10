@@ -8,6 +8,7 @@ const { CHUNK_SIZE_HARD_CAP, TARGET_LOGS_PER_CHUNK } =
 const { Mongoose } = require("mongoose")
 const { startWorker, chainlogProcessorConfig } = require("chain-backend")
 const configs = require("../src/helpers/constants")
+const { getPrice } = require("../src/services/getPrice")
 
 async function createMongoose() {
   let mongoose = new Mongoose()
@@ -39,6 +40,7 @@ async function createMongoose() {
 
 async function main() {
   const mongoose = await createMongoose()
+  // getPrice()
   const provider = new AssistedJsonRpcProvider(
     new JsonRpcProvider({
       timeout: 6000,

@@ -1,6 +1,6 @@
 const apiResponse = require("../helpers/apiResponse")
 const _ = require("lodash")
-const PoolsModel = require("../models/PoolsModel")
+const PoolsModel = require("../models/poolsModel")
 const InfoModel = require("../models/infoModel")
 var mongoose = require("mongoose")
 mongoose.set("useFindAndModify", false)
