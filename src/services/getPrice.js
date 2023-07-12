@@ -18,7 +18,6 @@ async function getPrice() {
   const body = await getApi(query)
 
   for (let data of body) {
-    console.log(data.usdPrice)
     savePrice({
       address: ethers.utils.getAddress(data.tokenAddress),
       price: data.usdPrice.toString(),

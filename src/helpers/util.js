@@ -1,4 +1,4 @@
-const config = require("../helpers/constants");
+const config = require("./config");
 
 exports.chainConfigs = () => {
     if (!process.env.CHAIN_ID) {

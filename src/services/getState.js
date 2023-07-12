@@ -21,9 +21,8 @@ const getPools = async () => {
       MARK: bn(pool.mark),
       TOKEN_R: pool.r_address,
       k: bn(pool.k),
-      TOKEN: pool.token,
       powers: pool.powers,
-      HALF_LIFE: bn(pool.half_life),
+      INTEREST_HL: bn(pool.interest_hl)
     }
   }
   const { tokens, pools, poolGroups } = await DecodePools.loadStatesData(
@@ -38,7 +37,6 @@ const savePools = async (pools) => {
   const poolAddresses = Object.keys(pools)
 
   for (const poolAddress of poolAddresses ) {
-    console.log(pools[poolAddress].price, pools[poolAddress].rC.toString())
     PoolsModel
   }
 }

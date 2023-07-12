@@ -2,9 +2,9 @@ require("dotenv").config({ path: "./.env" })
 const { accumulationConsumerFactory } = require("chain-backend")
 const InfoModel = require("../src/models/infoModel")
 const PoolsModel = require("../src/models/poolsModel")
-const configs = require("../src/helpers/constants")
+const configs = require("../src/helpers/config")
 const { utils } = require("ethers")
-
+const { bn } = require("../src/utils/helper")
 module.exports = (config) => {
   const topic =
     "0x6950339c7661cca450281e53722525cc136590e622b011d5be7e4c4993685a6c"
@@ -14,6 +14,8 @@ module.exports = (config) => {
       topics: [topic],
     },
   ]
+  sideCheckNative = '1364068194842176056990105843868530818345537040110'
+  sideCheckTarget = '32'
 
   let iface = new utils.Interface([
     "event Swap(address indexed payer,address indexed poolIn,address indexed poolOut,address recipient,uint sideIn,uint sideOut,uint amountIn,uint amountOut)",
@@ -27,7 +29,15 @@ module.exports = (config) => {
     applyLogs: async (value, logs) => {
       for (let log of logs) {
         const logParsed = iface.parseLog(log);
-        console.log(logParsed)
+        // console.log('sideIn', logParsed.args.sideIn)
+        // console.log('sideOut', logParsed.args.sideOut)
+        let price
+        // if(logParsed.args.sideIn.toString() == bn(sideCheckNative)) {
+        //   price = 
+        // }
+        // if(logParsed.args.sideOut.toString() == bn(sideCheckNative)) console.log('true')
+        // if(logParsed.args.sideIn.toString() == bn(sideCheckTarget)) console.log('true')
+        // if(logParsed.args.sideOut.toString() == bn(sideCheckTarget)) console.log('true')
       }
       return value // untouched
     },

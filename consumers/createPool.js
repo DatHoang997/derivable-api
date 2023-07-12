@@ -3,7 +3,7 @@ const { accumulationConsumerFactory } = require("chain-backend")
 const InfoModel = require("../src/models/infoModel")
 const PoolsModel = require("../src/models/poolsModel")
 const decodePools = require("../src/services/decodePools")
-const configs = require("../src/helpers/constants")
+const configs = require("../src/helpers/config")
 const { getApi } = require("../src/services/getPrice")
 
 module.exports = (config) => {
@@ -22,7 +22,7 @@ module.exports = (config) => {
   const consumer = accumulationConsumerFactory({
     ...config,
     filter,
-    genesis: 0,
+    genesis: 107513624,
 
     applyLogs: async (value, logs) => {
       const parsedLogs = await DecodePools.parseDdlLogs(logs)
@@ -31,7 +31,7 @@ module.exports = (config) => {
       const convertedData = []
       for (let i = 0; i < keys.length; i++) {
         convertedData.push(
-          await DecodePools.convertdata(poolData.pools[keys[i]]),
+          await DecodePools.convertData(poolData.pools[keys[i]]),
         )
       }
       save(convertedData)

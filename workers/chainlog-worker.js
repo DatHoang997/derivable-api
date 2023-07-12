@@ -3,11 +3,11 @@ const path = require("path")
 const { JsonRpcProvider } = require("@ethersproject/providers")
 const { AssistedJsonRpcProvider } = require("assisted-json-rpc-provider")
 const { CHUNK_SIZE_HARD_CAP, TARGET_LOGS_PER_CHUNK } =
-  require("../src/helpers/constants").getlogs
+  require("../src/helpers/config").getlogs
 
 const { Mongoose } = require("mongoose")
 const { startWorker, chainlogProcessorConfig } = require("chain-backend")
-const configs = require("../src/helpers/constants")
+const configs = require("../src/helpers/config")
 const { getPrice } = require("../src/services/getPrice")
 
 async function createMongoose() {

@@ -85,18 +85,22 @@ var PoolsSchema = new Schema(
       type: String,
       required: false,
     },
-    token: {
-      type: String,
-      required: true,
-    },
     powers: {
       type: Array,
       required: true,
     },
-    half_life: {
+    interest_hl: {
       type: String,
       required: true,
     },
+    interes_rate: {
+      type: String,
+      required: true,
+    },
+    // open_interest: {
+    //   type: String,
+    //   required: true,
+    // },
   },
   { timestamps: true },
 )
