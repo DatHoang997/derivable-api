@@ -15,8 +15,8 @@ const getPools = async () => {
   for (const pool of listPools) {
     uniPools.push(ethers.utils.getAddress("0x" + pool.oracle.slice(-40)))
     listTokens.push(pool.r_address)
-    poolData[pool.pool_address] = {
-      poolAddress: pool.pool_address,
+    poolData[pool.address] = {
+      poolAddress: pool.address,
       ORACLE: pool.oracle,
       MARK: bn(pool.mark),
       TOKEN_R: pool.r_address,

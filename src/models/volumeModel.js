@@ -4,7 +4,7 @@ var Schema = mongoose.Schema
 
 var VolumeSchema = new Schema(
   {
-    pool_address: {
+    address: {
       type: String,
       required: true,
       unix: true,
@@ -14,11 +14,11 @@ var VolumeSchema = new Schema(
       required: true,
     },
     timestamp: {
-      type: String,
+      type: Number,
       required: true,
     },
     type: {
-      type: String,
+      type: Number,
       required: true,
     },
   },

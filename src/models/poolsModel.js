@@ -4,7 +4,7 @@ var Schema = mongoose.Schema
 
 var PoolsSchema = new Schema(
   {
-    pool_address: {
+    address: {
       type: String,
       required: true,
       unix: true,

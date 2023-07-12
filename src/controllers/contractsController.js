@@ -1,18 +1,20 @@
 const apiResponse = require("../helpers/apiResponse")
 const _ = require("lodash")
 const PoolsModel = require("../models/poolsModel")
-const InfoModel = require("../models/infoModel")
-var mongoose = require("mongoose")
-mongoose.set("useFindAndModify", false)
+const infoModel = require("../models/infoModel")
 const getState = require("../services/getState")
+const volume = require("../services/Volume")
+const mongoose = require("mongoose")
+mongoose.set("useFindAndModify", false)
 
 exports.getContracts = [
   async function (req, res) {
-    let info = await InfoModel.find()
-    // if (Date.now() > info.time + 3600000) await getState.getPools()
-    await getState.getPools()
+    let info = await infoModel.find()
+    if (Date.now() > info.time + 3600000) await getState.getPools()
+    // await getState.getPools()
     let pools = await PoolsModel.find()
     const data = []
+    let a = volume.calculateVolume()
     for (let pool of pools) {
       data.push({
         ticker_id: pool.ticker_id,
