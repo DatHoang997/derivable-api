@@ -39,7 +39,6 @@ const getApi = async (query) => {
     }),
   }
   const url = `https://deep-index.moralis.io/api/v2/erc20/prices?chain=${process.env.CHAIN}&include=percent_change`
-
   const response = await fetch(url, options)
 
   return JSON.parse(await response.text())

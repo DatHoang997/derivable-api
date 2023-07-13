@@ -4,7 +4,7 @@ var Schema = mongoose.Schema
 
 var InfoSchema = new Schema(
   {
-    eth_price: {
+    native_price: {
       type: String,
       required: true,
     },

@@ -40,7 +40,7 @@ async function createMongoose() {
 
 async function main() {
   const mongoose = await createMongoose()
-  // getPrice()
+  getPrice()
   const provider = new AssistedJsonRpcProvider(
     new JsonRpcProvider({
       timeout: 6000,

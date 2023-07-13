@@ -27,9 +27,11 @@ module.exports = (config) => {
     applyLogs: async (value, logs) => {
       const parsedLogs = await DecodePools.parseDdlLogs(logs)
       const poolData = await DecodePools.generatePoolData(parsedLogs)
+      console.log(poolData)
       const keys = Object.keys(poolData.pools)
       const convertedData = []
       for (let i = 0; i < keys.length; i++) {
+        console.log(poolData.pools[keys[i]])
         convertedData.push(
           await DecodePools.convertData(poolData.pools[keys[i]]),
         )
@@ -48,7 +50,7 @@ module.exports = (config) => {
       await poolsModel.save()
       await InfoModel.findOneAndUpdate(
         {},
-        { time: Date.now(), eth_price: pool.last_price },
+        { time: Date.now(), native_price: pool.last_price },
         { upsert: true },
       )
     }

@@ -115,7 +115,7 @@ class DecodePools {
       },
       {
         reference: "token_r",
-        contractAddress: quoteToken,
+        contractAddress: TOKEN_R,
         abi: erc20Abi,
         calls: [
           {

@@ -9,7 +9,7 @@ var VolumeSchema = new Schema(
       required: true,
       unix: true,
     },
-    value: {
+    amount: {
       type: String,
       required: true,
     },
