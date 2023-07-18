@@ -1,7 +1,6 @@
 const { bn } = require("../utils/helper")
 const volumeModel = require("../models/volumeModel")
 const ethers = require("ethers")
-const volume = require("../../consumers/volume")
 const BigNumber = require("bignumber.js")
 
 const getVolume = async () => {
@@ -39,7 +38,7 @@ const calculateVolume = (volumes, pool, native_price) => {
     }
   }
 
-  return volumeAmount
+  return ethers.utils.formatEther(volumeAmount.toString())
 }
 
 module.exports = { getVolume, calculateVolume }

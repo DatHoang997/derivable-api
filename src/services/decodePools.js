@@ -38,6 +38,7 @@ class DecodePools {
   }
 
   convertData = async (pool) => {
+    console.log(pool)
     const [baseToken, quoteToken, token_r] = await this.getTokenSymbol(
       pool.baseToken,
       pool.quoteToken,
@@ -78,7 +79,9 @@ class DecodePools {
       k: pool.k.toString(),
       powers: pool.powers,
       interes_rate: pool.dailyInterestRate,
-      interest_hl: pool.INTEREST_HL.toString()
+      interest_hl: pool.INTEREST_HL.toString(),
+      rA: pool.states.rA,
+      rB: pool.states.rB,
     }
   }
 
@@ -354,9 +357,9 @@ class DecodePools {
   getPoolOverridedProvider = (poolAddresses) => {
     const stateOverride = {}
     // poolAddresses.forEach((address: string) => {
-      stateOverride['0x4413d44163C7Ba2B285787719a9ed2DdFC6f57E0'] = {
-        code: PoolOverride.deployedBytecode,
-      }
+    stateOverride["0x4413d44163C7Ba2B285787719a9ed2DdFC6f57E0"] = {
+      code: PoolOverride.deployedBytecode,
+    }
     // })
 
     //@ts-ignore
@@ -424,11 +427,11 @@ class DecodePools {
       try {
         const abiInterface = new ethers.utils.Interface(PoolOverride.abi)
         const poolStateData =
-          multiCallData['pools-' + poolAddress].callsReturnContext
+          multiCallData["pools-" + poolAddress].callsReturnContext
         const data = formatMultiCallBignumber(poolStateData[0].returnValues)
-        const encodeData = abiInterface.encodeFunctionResult('compute', [data])
+        const encodeData = abiInterface.encodeFunctionResult("compute", [data])
         const formatedData = abiInterface.decodeFunctionResult(
-          'compute',
+          "compute",
           encodeData,
         )
         pools[poolStateData[0].reference] = {
@@ -440,7 +443,7 @@ class DecodePools {
           ...formatedData.stateView.state,
         }
       } catch (e) {
-        console.error('Cannot get states of: ', poolAddress)
+        console.error("Cannot get states of: ", poolAddress)
         console.error(e)
       }
     })

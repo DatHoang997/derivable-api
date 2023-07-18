@@ -35,7 +35,6 @@ var PoolsSchema = new Schema(
     },
     r_price: {
       type: String,
-      required: false,
     },
     last_price: {
       type: String,
@@ -97,10 +96,18 @@ var PoolsSchema = new Schema(
       type: String,
       required: true,
     },
-    // open_interest: {
-    //   type: String,
-    //   required: true,
-    // },
+    rB: {
+      type: String,
+      required: true,
+    },
+    rA: {
+      type: String,
+      required: true,
+    },
+    open_interest: {
+      type: String,
+      required: false,
+    },
   },
   { timestamps: true },
 )

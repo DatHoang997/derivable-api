@@ -29,7 +29,7 @@ exports.getContracts = [
         base_volume: volumevalue,
         quote_volume: volumevalue,
         product_type: "PERP",
-        open_interest: "pool.open_interest",
+        open_interest: pool.open_interest,
         index_price: pool.index_price,
         index_name: pool.index_name,
         index_currency: pool.index_currency,
@@ -38,7 +38,7 @@ exports.getContracts = [
         funding_rate: pool.interes_rate,
         next_funding_rate: pool.interes_rate,
         next_funding_rate_timestamp: pool.end_timestamp,
-        contract_price_currency: pool.index_currency
+        contract_price_currency: pool.index_currency,
       })
     }
     return apiResponse.successResponseWithData(res, "Operation success", data)
